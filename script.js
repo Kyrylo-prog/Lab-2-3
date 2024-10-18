@@ -1,17 +1,18 @@
-const list = document.getElementById('todo-list')
-const itemCountSpan = document.getElementById('item-count')
-const uncheckedCountSpan = document.getElementById('unchecked-count')
+const list = document.getElementById('todo-list');
+const itemCountSpan = document.getElementById('item-count');
+const uncheckedCountSpan = document.getElementById('unchecked-count');
 
-let todos = [];
-let id = 100;
+let todos = JSON.parse(localStorage.getItem('todos')) || []; // Retrieve from Local Storage
+let id = todos.length ? todos[todos.length - 1].id + 1 : 100; // Ensure unique ID for new todos
 
 render();
 
 function newTodo() {
-  let text = prompt('enter todo');
+  let text = prompt('Enter todo');
+  if (!text) return; // Prevent empty todos
   let todo = { id: id++, text, checked: false };
   todos.push(todo);
-  console.log("todos", todos);
+  saveTodos();
   render();
 }
 
@@ -19,33 +20,35 @@ function render() {
   list.innerHTML = todos.map(todo => renderTodo(todo)).join("");
   itemCountSpan.textContent = todos.length;
   uncheckedCountSpan.textContent = todos.filter(todo => !todo.checked).length;
-  uncheckedCountSpan.textContent = todos.filter(todo => todo.checked === false).length;
 }
 
-function renderTodo({id, text , checked}) {
+function renderTodo({ id, text, checked }) {
   return `
   <li class="list-group-item">
     <input type="checkbox" class="form-check-input me-2" id="${id}" ${checked ? "checked" : ""} onchange="changeTodo(${id})"/>
-    <label for="${id}"><span class="">${text}</span></label>
-    <button class="btn btn-danger btn-sm float-end" onclick=deleteTodo(${id})>delete</button>
+    <label for="${id}"><span>${text}</span></label>
+    <button class="btn btn-danger btn-sm float-end" onclick="deleteTodo(${id})">Delete</button>
   </li>
   `;
 }
 
-function deleteTodo(id){
- todos = todos.filter(todo => todo.id !== id)
- render();
+function deleteTodo(id) {
+  todos = todos.filter(todo => todo.id !== id);
+  saveTodos();
+  render();
 }
 
-function changeTodo(id){
-for(let todo of todos){
-  if(todo.id === id){
-    todo.checked =!todo.checked
+function changeTodo(id) {
+  for (let todo of todos) {
+    if (todo.id === id) {
+      todo.checked = !todo.checked;
+      break;
+    }
   }
-}
-render();
+  saveTodos();
+  render();
 }
 
 function saveTodos() {
-  localStorage.setItem('todos', JSON.stringify(todos));
+  localStorage.setItem('todos', JSON.stringify(todos)); // Save to Local Storage
 }
