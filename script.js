@@ -2,14 +2,13 @@ const list = document.getElementById('todo-list');
 const itemCountSpan = document.getElementById('item-count');
 const uncheckedCountSpan = document.getElementById('unchecked-count');
 
-let todos = JSON.parse(localStorage.getItem('todos')) || []; // Retrieve from Local Storage
-let id = todos.length ? todos[todos.length - 1].id + 1 : 100; // Ensure unique ID for new todos
-
+let todos = JSON.parse(localStorage.getItem('todos')) || []; 
+let id = todos.length ? todos[todos.length - 1].id + 1 : 100; 
 render();
 
 function newTodo() {
   let text = prompt('Enter todo');
-  if (!text) return; // Prevent empty todos
+  if (!text) return; 
   let todo = { id: id++, text, checked: false };
   todos.push(todo);
   saveTodos();
@@ -50,5 +49,5 @@ function changeTodo(id) {
 }
 
 function saveTodos() {
-  localStorage.setItem('todos', JSON.stringify(todos)); // Save to Local Storage
+  localStorage.setItem('todos', JSON.stringify(todos));
 }
